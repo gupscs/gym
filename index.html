@@ -1,419 +1,178 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#111111">
-<link rel="manifest" href="manifest.json">
-<title>Treino App PWA</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<title>Treino App</title>
+
+<!-- Material Design -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+
 body{
-font-family:Arial;
-margin:0;
-background:#f4f5f7;
-padding:12px;
+background:#f4f6f8;
+padding-bottom:80px;
 }
 
-.container{
-max-width:900px;
-margin:auto;
+.brand{
+padding:20px;
+font-size:24px;
+font-weight:600;
 }
 
-.card{
-background:white;
-padding:16px;
-margin-bottom:14px;
+.card-panel{
+border-radius:18px;
+}
+
+.exercise-card{
 border-radius:16px;
-box-shadow:0 2px 10px rgba(0,0,0,.08);
+margin-bottom:15px;
 }
 
-button{
-padding:14px;
-border:none;
-border-radius:12px;
-font-size:16px;
-margin:6px;
-width:30%;
+.metric{
+font-size:28px;
+font-weight:bold;
 }
 
-.primary{
-background:#111;
-color:white;
+.bottom-nav{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:white;
+display:flex;
+justify-content:space-around;
+padding:10px;
+box-shadow:0 -2px 8px rgba(0,0,0,.12);
 }
 
 .hidden{
 display:none;
 }
 
-input,select{
-width:100%;
-padding:10px;
-margin:8px 0;
-border-radius:10px;
-border:1px solid #ccc;
+.tab-chip{
+margin:5px;
 }
 
-@media(max-width:700px){
-button{
-width:100%;
+input{
+font-size:18px !important;
 }
-}
+
 </style>
-</head>
 
+</head>
 <body>
 
 <div class="container">
 
-<div class="card">
-
-<h2>Treino App</h2>
-
-<button class="primary"
-onclick="showScreen('treinos')">
-Treinos
-</button>
-
-<button class="primary"
-onclick="showScreen('adicionar')">
-Adicionar
-</button>
-
-<button class="primary"
-onclick="showScreen('dashboard')">
-Dashboard
-</button>
-
-<button class="primary"
-onclick="syncToGoogle()">
-Sincronizar
-</button>
-
+<div class="brand center blue-text">
+Treino Tracker
 </div>
 
-<div id="treinos"
-class="card">
 
-<h3>Treino do Dia</h3>
+<!-- HOME KPIs -->
+<div class="row">
 
-<div id="todayWorkout">
-Use Adicionar para registrar treinos.
+<div class="col s6">
+<div class="card-panel white center">
+<div class="metric blue-text" id="volumeTotal">
+0
+</div>
+Volume
+</div>
+</div>
+
+<div class="col s6">
+<div class="card-panel white center">
+<div class="metric green-text" id="corridaTotal">
+0
+</div>
+Km
+</div>
 </div>
 
 </div>
 
 
-<div id="adicionar"
-class="card hidden">
 
-<h3>Adicionar Registro</h3>
+<!-- TREINOS -->
+<div id="screenTreinos">
 
+<div id="diasAbas"></div>
+
+<div id="treinoDia"></div>
+
+</div>
+
+
+<!-- REGISTRAR -->
+<div id="screenRegistrar" class="hidden">
+
+<div class="card-panel white">
+
+<div class="input-field">
+<select id="diaSelect"></select>
 <label>Dia</label>
-
-<select id="dia">
-
-<option>Terça</option>
-<option>Quarta</option>
-<option>Quinta</option>
-<option>Sexta</option>
-<option>Sábado</option>
-<option>Domingo</option>
-
-</select>
-
-<label>Registro</label>
-
-<input
-id="registro"
-placeholder="Ex: Supino 20kg / Corrida 4km 24min"
-/>
-
-<button class="primary"
-onclick="saveWorkout()">
-Salvar
-</button>
-
 </div>
 
-
-<div id="dashboard"
-class="card hidden">
-
-<h3>Dashboard</h3>
-
-<h4>Evolução</h4>
-<canvas id="strengthChart"></canvas>
-
-<h4>Corrida</h4>
-<canvas id="runChart"></canvas>
-
-<h4>Jiu-Jitsu</h4>
-<div id="jjStats"></div>
+<div id="formRegistro"></div>
 
 </div>
 
 </div>
 
-<script>
 
-let db;
+<!-- DASHBOARD -->
+<div id="screenDash" class="hidden">
 
-const request=
-indexedDB.open(
-'TreinoDB',
-1
-);
+<div class="card-panel white">
+<canvas id="chartCarga"></canvas>
+</div>
 
-request.onupgradeneeded=(e)=>{
+<br>
 
-db=e.target.result;
+<div class="card-panel white">
+<canvas id="chartCorrida"></canvas>
+</div>
 
-if(
-!db.objectStoreNames.contains(
-'logs'
-)
-){
-db.createObjectStore(
-'logs',
-{
-keyPath:'id',
-autoIncrement:true
-}
-);
-}
+</div>
 
-};
+</div>
 
-request.onsuccess=(e)=>{
-db=e.target.result;
-};
 
+<!-- Bottom Nav -->
+<div class="bottom-nav">
 
-/* telas */
+<a onclick="trocarTela('treinos')">
+<i class="material-icons">fitness_center</i>
+</a>
 
-function showScreen(id){
+<a onclick="trocarTela('registrar')">
+<i class="material-icons">edit</i>
+</a>
 
-[
-'treinos',
-'adicionar',
-'dashboard'
-].forEach(x=>{
+<a onclick="trocarTela('dash')">
+<i class="material-icons">bar_chart</i>
+</a>
 
-document
-.getElementById(x)
-.classList.add('hidden');
+<a onclick="syncSheets()">
+<i class="material-icons">sync</i>
+</a>
 
-});
+</div>
 
-document
-.getElementById(id)
-.classList.remove('hidden');
 
-if(
-id==='dashboard'
-){
-renderDashboard();
-}
-
-}
-
-
-/* indexeddb */
-
-function addLog(record){
-
-let tx=
-db.transaction(
-['logs'],
-'readwrite'
-);
-
-tx
-.objectStore(
-'logs'
-)
-.add(record);
-
-}
-
-function getLogs(){
-
-return new Promise(resolve=>{
-
-let tx=
-db.transaction(
-['logs'],
-'readonly'
-);
-
-let req=
-tx
-.objectStore(
-'logs'
-)
-.getAll();
-
-req.onsuccess=()=>{
-
-resolve(
-req.result
-);
-
-};
-
-});
-
-}
-
-
-/* salvar */
-
-function saveWorkout(){
-
-addLog({
-
-date:
-new Date()
-.toLocaleDateString(),
-
-day:
-document
-.getElementById(
-'dia'
-).value,
-
-entry:
-document
-.getElementById(
-'registro'
-).value
-
-});
-
-alert(
-'Registro salvo'
-);
-
-}
-
-
-/* dashboard */
-
-let chart1;
-let chart2;
-
-async function renderDashboard(){
-
-const d=
-await getLogs();
-
-document
-.getElementById(
-'jjStats'
-)
-.innerHTML=
-'Total registros: '
-+d.length;
-
-
-let labels=
-d.map(
-x=>x.date
-);
-
-let values=
-d.map(
-(x,i)=>i+1
-);
-
-if(chart1){
-chart1.destroy();
-}
-
-chart1=
-new Chart(
-document
-.getElementById(
-'strengthChart'
-),
-{
-type:'line',
-
-data:{
-labels:labels,
-
-datasets:[
-{
-label:
-'Treinos',
-
-data:values
-}
-]
-}
-}
-);
-
-
-if(chart2){
-chart2.destroy();
-}
-
-chart2=
-new Chart(
-document
-.getElementById(
-'runChart'
-),
-{
-type:'line',
-
-data:{
-labels:labels,
-
-datasets:[
-{
-label:
-'Registros',
-
-data:values
-}
-]
-}
-}
-);
-
-}
-
-
-/* google sync */
-
-function syncToGoogle(){
-
-alert(
-'Configurar URL do Apps Script'
-);
-
-}
-
-
-/* service worker */
-
-if(
-'serviceWorker'
-in navigator
-){
-navigator
-.serviceWorker
-.register(
-'sw.js'
-);
-}
-
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js">
 </script>
+
+<script src="app.js"></script>
 
 </body>
 </html>
