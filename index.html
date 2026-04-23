@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Treino Tracker</title>
 
-<title>Treino App</title>
-
-<!-- Material Design -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
@@ -17,13 +16,14 @@ href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.m
 
 body{
 background:#f4f6f8;
-padding-bottom:80px;
+padding-bottom:90px;
 }
 
 .brand{
 padding:20px;
 font-size:24px;
 font-weight:600;
+text-align:center;
 }
 
 .card-panel{
@@ -32,12 +32,7 @@ border-radius:18px;
 
 .exercise-card{
 border-radius:16px;
-margin-bottom:15px;
-}
-
-.metric{
-font-size:28px;
-font-weight:bold;
+margin-bottom:14px;
 }
 
 .bottom-nav{
@@ -48,20 +43,12 @@ width:100%;
 background:white;
 display:flex;
 justify-content:space-around;
-padding:10px;
+padding:12px;
 box-shadow:0 -2px 8px rgba(0,0,0,.12);
 }
 
 .hidden{
 display:none;
-}
-
-.tab-chip{
-margin:5px;
-}
-
-input{
-font-size:18px !important;
 }
 
 </style>
@@ -71,28 +58,23 @@ font-size:18px !important;
 
 <div class="container">
 
-<div class="brand center blue-text">
+<div class="brand blue-text">
 Treino Tracker
 </div>
 
 
-<!-- HOME KPIs -->
 <div class="row">
 
 <div class="col s6">
-<div class="card-panel white center">
-<div class="metric blue-text" id="volumeTotal">
-0
-</div>
+<div class="card-panel center">
+<h5 id="volumeTotal">0</h5>
 Volume
 </div>
 </div>
 
 <div class="col s6">
-<div class="card-panel white center">
-<div class="metric green-text" id="corridaTotal">
-0
-</div>
+<div class="card-panel center">
+<h5 id="corridaTotal">0</h5>
 Km
 </div>
 </div>
@@ -106,9 +88,12 @@ Km
 
 <div id="diasAbas"></div>
 
+<br>
+
 <div id="treinoDia"></div>
 
 </div>
+
 
 
 <!-- REGISTRAR -->
@@ -128,7 +113,8 @@ Km
 </div>
 
 
-<!-- DASHBOARD -->
+
+<!-- DASH -->
 <div id="screenDash" class="hidden">
 
 <div class="card-panel white">
@@ -143,26 +129,34 @@ Km
 
 </div>
 
+
 </div>
 
 
-<!-- Bottom Nav -->
 <div class="bottom-nav">
 
 <a onclick="trocarTela('treinos')">
-<i class="material-icons">fitness_center</i>
+<i class="material-icons">
+fitness_center
+</i>
 </a>
 
 <a onclick="trocarTela('registrar')">
-<i class="material-icons">edit</i>
+<i class="material-icons">
+edit
+</i>
 </a>
 
 <a onclick="trocarTela('dash')">
-<i class="material-icons">bar_chart</i>
+<i class="material-icons">
+bar_chart
+</i>
 </a>
 
 <a onclick="syncSheets()">
-<i class="material-icons">sync</i>
+<i class="material-icons">
+sync
+</i>
 </a>
 
 </div>
