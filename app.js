@@ -2,6 +2,7 @@ let treinos=[];
 let cargaChart;
 let corridaChart;
 
+
 fetch("treino.json")
 .then(r=>r.json())
 .then(data=>{
@@ -21,32 +22,29 @@ dashboard();
 });
 
 
+
 function trocarTela(nome){
 
-document.getElementById(
-"screenTreinos"
-).classList.add("hidden");
+["screenTreinos",
+"screenRegistrar",
+"screenDash"]
 
-document.getElementById(
-"screenRegistrar"
-).classList.add("hidden");
+.forEach(id=>
+document.getElementById(id)
+.classList.add("hidden")
+);
 
-document.getElementById(
-"screenDash"
-).classList.add("hidden");
-
-
-if(nome=="treinos")
+if(nome==="treinos")
 document.getElementById(
 "screenTreinos"
 ).classList.remove("hidden");
 
-if(nome=="registrar")
+if(nome==="registrar")
 document.getElementById(
 "screenRegistrar"
 ).classList.remove("hidden");
 
-if(nome=="dash")
+if(nome==="dash")
 document.getElementById(
 "screenDash"
 ).classList.remove("hidden");
@@ -59,12 +57,12 @@ function montarDias(){
 
 let html="";
 
-treinos.forEach((d,i)=>{
+treinos.forEach((t,i)=>{
 
 html+=`
-<a class='chip blue white-text tab-chip'
+<a class='chip blue white-text'
 onclick='mostrarTreino(${i})'>
-${d.dia}
+${t.dia}
 </a>
 `;
 
@@ -78,31 +76,104 @@ document.getElementById(
 
 
 
+
 function mostrarTreino(i){
 
 let t=treinos[i];
 
-let html="";
-
-if(t.musculacao){
-
-t.musculacao.forEach(ex=>{
-
-let ultima=
-localStorage.getItem(
-i+"_"+ex
-)||"-";
-
-html+=`
-<div class='card exercise-card'>
+let html=`
+<div class='card'>
 <div class='card-content'>
 
 <span class='card-title'>
-${ex}
+${t.dia}
 </span>
 
+<p>
+<b>Objetivo:</b>
+${t.objetivo||"-"}
+</p>
+
+</div>
+</div>
+`;
+
+
+
+/* MUSCULAÇÃO */
+if(t.musculacao){
+
+html+="<h5>Musculação</h5>";
+
+t.musculacao.forEach(ex=>{
+
+let chave=
+i+"_"+ex.exercicio;
+
+let ultima=
+localStorage.getItem(chave)||"-";
+
+html+=`
+<div class='card exercise-card'>
+
+<div class='card-content'>
+
+<span class='card-title'>
+${ex.exercicio}
+</span>
+
+<p>
+${ex.series} x ${ex.repeticoes}
+</p>
+
+<p>
+Descanso:
+${ex.descanso_seg||60}s
+</p>
+
+<p>
 Última carga:
 <b>${ultima}</b>
+</p>
+
+</div>
+
+</div>
+`;
+
+});
+
+}
+
+
+
+/* CORRIDA */
+if(t.corrida){
+
+html+=`
+<h5>
+Corrida (${t.corrida.tipo})
+</h5>
+`;
+
+if(t.corrida.blocos){
+
+t.corrida.blocos.forEach(b=>{
+
+html+=`
+<div class='card'>
+<div class='card-content'>
+
+<b>${b.fase}</b><br>
+
+${b.tempo_min ?
+"Tempo: "+b.tempo_min+" min<br>" : ""}
+
+${b.repeticoes ?
+"Repetições: "+b.repeticoes+"<br>" : ""}
+
+${b.estrutura||""}
+${b.descricao ? "<br>"+b.descricao : ""}
 
 </div>
 </div>
@@ -113,25 +184,43 @@ ${ex}
 }
 
 
-if(t.corrida){
+if(t.corrida.progressao){
+
+html+="<h6>Progressão</h6>";
+
+t.corrida.progressao.forEach(p=>{
 
 html+=`
-<div class='card exercise-card'>
+<div class='card'>
 <div class='card-content'>
 
-<span class='card-title'>
-Corrida ${t.corrida.tipo}
-</span>
+Semanas:
+${p.semanas}
 
-Última distância:
-<b>
-${localStorage.getItem(i+"_dist")||0}
-km
-</b>
+<br>
+
+Distância:
+${p.distancia_km} km
 
 </div>
 </div>
 `;
+
+});
+
+}
+
+
+if(t.corrida.meta){
+
+html+=`
+<p>
+Meta:
+${t.corrida.meta}
+</p>
+`;
+
+}
 
 }
 
@@ -143,17 +232,23 @@ document.getElementById(
 
 
 
+
 function popularSelect(){
 
 let s=
-document.getElementById("diaSelect");
+document.getElementById(
+"diaSelect"
+);
+
+s.innerHTML="";
 
 treinos.forEach((t,i)=>{
 
-s.innerHTML+=
-`<option value='${i}'>
+s.innerHTML+=`
+<option value='${i}'>
 ${t.dia}
-</option>`;
+</option>
+`;
 
 });
 
@@ -164,6 +259,7 @@ s.onchange=formRegistro;
 formRegistro();
 
 }
+
 
 
 
@@ -178,29 +274,32 @@ let t=treinos[idx];
 
 let html="";
 
+
+/* PESOS */
 if(t.musculacao){
 
 html+="<h5>Cargas</h5>";
 
 t.musculacao.forEach(ex=>{
 
+let chave=
+idx+"_"+ex.exercicio;
+
 let v=
-localStorage.getItem(
-idx+"_"+ex
-)||"";
+localStorage.getItem(chave)||"";
 
 html+=`
 <div class='input-field'>
 
 <input
-id='${idx}_${ex}'
+id='${chave}'
 type='number'
 step='0.1'
 value='${v}'
 >
 
 <label class='active'>
-${ex}
+${ex.exercicio}
 </label>
 
 </div>
@@ -212,16 +311,35 @@ ${ex}
 
 
 
+/* REGISTRO CORRIDA */
 if(t.corrida){
+
+let tempo=
+localStorage.getItem(
+idx+"_tempo"
+)||"";
+
+let vmax=
+localStorage.getItem(
+idx+"_vmax"
+)||"";
+
+let dist=
+localStorage.getItem(
+idx+"_dist"
+)||"";
 
 html+=`
 
 <h5>Corrida</h5>
 
 <div class='input-field'>
-<input id='tempo'
+<input
+id='tempo'
 type='number'
-step='0.1'>
+step='0.1'
+value='${tempo}'
+>
 <label class='active'>
 Tempo (min)
 </label>
@@ -229,19 +347,25 @@ Tempo (min)
 
 
 <div class='input-field'>
-<input id='vmax'
+<input
+id='vmax'
 type='number'
-step='0.1'>
+step='0.1'
+value='${vmax}'
+>
 <label class='active'>
-Vel Máx
+Vel máx
 </label>
 </div>
 
 
 <div class='input-field'>
-<input id='dist'
+<input
+id='dist'
 type='number'
-step='0.1'>
+step='0.1'
+value='${dist}'
+>
 <label class='active'>
 Distância
 </label>
@@ -250,6 +374,7 @@ Distância
 `;
 
 }
+
 
 
 html+=`
@@ -267,22 +392,28 @@ document.getElementById(
 
 
 
+
 function salvar(idx){
 
 let t=treinos[idx];
 
+
+/* SALVAR CARGAS */
 if(t.musculacao){
 
 t.musculacao.forEach(ex=>{
 
-let v=
+let chave=
+idx+"_"+ex.exercicio;
+
+let valor=
 document.getElementById(
-idx+"_"+ex
+chave
 ).value;
 
 localStorage.setItem(
-idx+"_"+ex,
-v
+chave,
+valor
 );
 
 });
@@ -290,6 +421,8 @@ v
 }
 
 
+
+/* SALVAR CORRIDA */
 if(t.corrida){
 
 localStorage.setItem(
@@ -316,12 +449,15 @@ document.getElementById(
 }
 
 M.toast({
-html:'Treino salvo'
+html:"Treino salvo"
 });
 
 dashboard();
 
+mostrarTreino(idx);
+
 }
+
 
 
 
@@ -331,21 +467,34 @@ let labels=[];
 let cargas=[];
 let km=[];
 
+
 treinos.forEach((t,i)=>{
 
-if(t.musculacao){
+labels.push(
+t.dia
+);
 
-labels.push(t.dia);
+
+/* primeiro exercício */
+if(
+t.musculacao &&
+t.musculacao.length>0
+){
 
 cargas.push(
 Number(
 localStorage.getItem(
-i+"_"+t.musculacao[0]
+i+"_"+t.musculacao[0].exercicio
 )||0
 )
 );
 
 }
+else{
+cargas.push(0);
+}
+
+
 
 km.push(
 Number(
@@ -357,15 +506,22 @@ i+"_dist"
 
 });
 
+
 document.getElementById(
 "volumeTotal"
 ).innerHTML=
-cargas.reduce((a,b)=>a+b,0);
+cargas.reduce(
+(a,b)=>a+b,
+0
+);
 
 document.getElementById(
 "corridaTotal"
 ).innerHTML=
-km.reduce((a,b)=>a+b,0);
+km.reduce(
+(a,b)=>a+b,
+0
+);
 
 
 
@@ -379,11 +535,12 @@ document.getElementById(
 ),
 {
 type:"line",
+
 data:{
 labels,
 datasets:[
 {
-label:"Progressão de carga",
+label:"Carga",
 data:cargas,
 tension:.4
 }
@@ -404,11 +561,12 @@ document.getElementById(
 ),
 {
 type:"bar",
+
 data:{
 labels,
 datasets:[
 {
-label:"Distância",
+label:"Distância km",
 data:km
 }
 ]
@@ -420,18 +578,21 @@ data:km
 
 
 
+
 function syncSheets(){
 
 fetch(
 "https://SEU_WEB_APP",
 {
 method:"POST",
-body:JSON.stringify(localStorage)
+body:JSON.stringify(
+localStorage
+)
 }
 );
 
 M.toast({
-html:'Sincronizado'
+html:"Sincronizado"
 });
 
 }
