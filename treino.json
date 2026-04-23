@@ -1,232 +1,154 @@
 {
- "treinos":[
+"treinos":[
 
-  {
-   "dia":"Quarta",
-   "objetivo":"Hipertrofia segura + base aeróbica",
+{
+"dia":"Quarta",
+"objetivo":"Hipertrofia + base aeróbica",
 
-   "musculacao":[
-    {
-     "exercicio":"Supino com halteres (pegada neutra)",
-     "series":3,
-     "repeticoes":"10",
-     "descanso_seg":60
-    },
-    {
-     "exercicio":"Remada baixa",
-     "series":3,
-     "repeticoes":"10",
-     "descanso_seg":60
-    },
-    {
-     "exercicio":"Elevação lateral leve",
-     "series":3,
-     "repeticoes":"12",
-     "descanso_seg":45
-    },
-    {
-     "exercicio":"Rosca direta",
-     "series":2,
-     "repeticoes":"12",
-     "descanso_seg":45
-    },
-    {
-     "exercicio":"Tríceps corda",
-     "series":2,
-     "repeticoes":"12",
-     "descanso_seg":45
-    }
-   ],
+"musculacao":[
+{
+"exercicio":"Supino com halteres",
+"series":3,
+"repeticoes":"10",
+"descanso_seg":60
+},
+{
+"exercicio":"Remada baixa",
+"series":3,
+"repeticoes":"10",
+"descanso_seg":60
+},
+{
+"exercicio":"Elevação lateral",
+"series":3,
+"repeticoes":"12",
+"descanso_seg":45
+}
+],
 
-   "corrida":{
-    "tipo":"leve",
-    "duracao_min":15,
+"corrida":{
+"tipo":"leve",
 
-    "blocos":[
-      {
-       "fase":"Aquecimento",
-       "tempo_min":5,
-       "descricao":"Caminhada"
-      },
-      {
-       "fase":"Trote",
-       "tempo_min":10,
-       "descricao":"Ritmo leve conversacional"
-      }
-    ],
+"blocos":[
+{
+"fase":"Aquecimento",
+"tempo_min":5,
+"descricao":"Caminhada"
+},
+{
+"fase":"Trote",
+"tempo_min":10,
+"descricao":"Ritmo leve"
+}
+]
+}
 
-    "meta":"Construção de base aeróbica"
-   }
-  },
+},
 
 
-  {
-   "dia":"Quinta",
-   "objetivo":"Fortalecer sem agredir lombar",
 
-   "musculacao":[
-    {
-     "exercicio":"Leg press",
-     "series":3,
-     "repeticoes":"12"
-    },
-    {
-     "exercicio":"Afundo com halter",
-     "series":3,
-     "repeticoes":"10"
-    },
-    {
-     "exercicio":"Mesa flexora",
-     "series":3,
-     "repeticoes":"12"
-    },
-    {
-     "exercicio":"Glute bridge",
-     "series":3,
-     "repeticoes":"12"
-    },
-    {
-     "exercicio":"Prancha",
-     "series":3,
-     "repeticoes":"30 segundos"
-    },
-    {
-     "exercicio":"Dead bug",
-     "series":3,
-     "repeticoes":"10"
-    },
-    {
-     "exercicio":"Bird dog",
-     "series":3,
-     "repeticoes":"10"
-    }
-   ]
-  },
+{
+"dia":"Quinta",
+
+"musculacao":[
+
+{
+"exercicio":"Leg press",
+"series":3,
+"repeticoes":"12"
+},
+
+{
+"exercicio":"Afundo com halter",
+"series":3,
+"repeticoes":"10"
+},
+
+{
+"exercicio":"Glute bridge",
+"series":3,
+"repeticoes":"12"
+}
+
+]
+
+},
 
 
-  {
-   "dia":"Sexta",
-   "objetivo":"Performance corrida + metabolismo",
 
-   "musculacao":[
-    {
-     "exercicio":"Supino inclinado halter",
-     "series":3,
-     "repeticoes":"10"
-    },
-    {
-     "exercicio":"Puxada na frente",
-     "series":3,
-     "repeticoes":"10"
-    },
-    {
-     "exercicio":"Face pull",
-     "series":3,
-     "repeticoes":"12"
-    }
-   ],
+{
+"dia":"Sexta",
 
-   "corrida":{
-    "tipo":"intervalada",
+"musculacao":[
+{
+"exercicio":"Supino inclinado",
+"series":3,
+"repeticoes":"10"
+},
+{
+"exercicio":"Face pull",
+"series":3,
+"repeticoes":"12"
+}
+],
 
-    "blocos":[
-      {
-       "fase":"Aquecimento",
-       "tempo_min":5
-      },
-      {
-       "fase":"Intervalos",
-       "repeticoes":6,
-       "estrutura":"1 min rápido + 1 min andando"
-      },
-      {
-       "fase":"Desaquecimento",
-       "tempo_min":5
-      }
-    ],
+"corrida":{
 
-    "meta":"Melhorar pace"
-   }
+"tipo":"intervalada",
 
-  },
+"blocos":[
 
+{
+"fase":"Aquecimento",
+"tempo_min":5
+},
 
-  {
-   "dia":"Sabado",
-   "objetivo":"Full body leve + técnica",
+{
+"fase":"Intervalos",
+"repeticoes":6,
+"estrutura":"1 min rápido + 1 min andando"
+},
 
-   "musculacao":[
-    {
-     "exercicio":"Agachamento goblet",
-     "series":3,
-     "repeticoes":"12"
-    },
-    {
-     "exercicio":"Remada unilateral",
-     "series":3,
-     "repeticoes":"10"
-    },
-    {
-     "exercicio":"Supino leve",
-     "series":3,
-     "repeticoes":"10"
-    },
-    {
-     "exercicio":"Elevação lateral",
-     "series":2,
-     "repeticoes":"12"
-    }
-   ],
+{
+"fase":"Desaquecimento",
+"tempo_min":5
+}
 
-   "corrida":{
-    "tipo":"tecnica",
+]
 
-    "blocos":[
-      {
-       "fase":"Postura",
-       "descricao":"tronco alto"
-      },
-      {
-       "fase":"Respiração",
-       "descricao":"2:2"
-      },
-      {
-       "fase":"Corrida",
-       "tempo_min":25
-      }
-    ]
-   }
+}
 
-  },
+},
 
 
-  {
-   "dia":"Domingo",
-   "objetivo":"Corrida longa",
 
-   "corrida":{
-    "tipo":"longa",
+{
+"dia":"Domingo",
 
-    "progressao":[
-      {
-       "semanas":"1-2",
-       "distancia_km":3
-      },
-      {
-       "semanas":"3-4",
-       "distancia_km":4
-      },
-      {
-       "semanas":"5+",
-       "distancia_km":5
-      }
-    ],
+"corrida":{
 
-    "meta_ritmo":"6:00/km",
-    "meta_final":"5:30/km"
-   }
+"tipo":"longa",
 
-  }
+"progressao":[
+{
+"semanas":"1-2",
+"distancia_km":3
+},
 
- ]
+{
+"semanas":"3-4",
+"distancia_km":4
+},
+
+{
+"semanas":"5+",
+"distancia_km":5
+}
+]
+
+}
+
+}
+
+]
 }
