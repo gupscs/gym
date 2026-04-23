@@ -1,4 +1,5 @@
 let treinos=[];
+
 let cargaChart;
 let corridaChart;
 
@@ -39,10 +40,12 @@ document.getElementById(
 "screenTreinos"
 ).classList.remove("hidden");
 
+
 if(nome==="registrar")
 document.getElementById(
 "screenRegistrar"
 ).classList.remove("hidden");
+
 
 if(nome==="dash")
 document.getElementById(
@@ -77,41 +80,44 @@ document.getElementById(
 
 
 
+function buscarExercicio(nome){
+
+let q=
+encodeURIComponent(
+nome+" exercício musculação"
+);
+
+window.open(
+"https://www.google.com/search?tbm=isch&q="+q,
+"_blank"
+);
+
+}
+
+
+
 function mostrarTreino(i){
 
 let t=treinos[i];
 
-let html=`
-<div class='card'>
-<div class='card-content'>
+let html="";
 
-<span class='card-title'>
-${t.dia}
-</span>
-
-<p>
-<b>Objetivo:</b>
-${t.objetivo||"-"}
-</p>
-
-</div>
-</div>
-`;
-
-
-
-/* MUSCULAÇÃO */
 if(t.musculacao){
-
-html+="<h5>Musculação</h5>";
 
 t.musculacao.forEach(ex=>{
 
-let chave=
-i+"_"+ex.exercicio;
+let hist=
+JSON.parse(
+localStorage.getItem(
+"hist_"+i+"_"+ex.exercicio
+)||"[]"
+);
 
 let ultima=
-localStorage.getItem(chave)||"-";
+hist.length ?
+hist[hist.length-1].peso
+:"-";
+
 
 html+=`
 <div class='card exercise-card'>
@@ -122,19 +128,28 @@ html+=`
 ${ex.exercicio}
 </span>
 
-<p>
 ${ex.series} x ${ex.repeticoes}
-</p>
 
-<p>
+<br>
+
 Descanso:
 ${ex.descanso_seg||60}s
-</p>
 
-<p>
+<br><br>
+
 Última carga:
 <b>${ultima}</b>
-</p>
+
+<br><br>
+
+<a
+class='btn-small blue'
+onclick="
+buscarExercicio(
+'${ex.exercicio}'
+)">
+Ver execução
+</a>
 
 </div>
 
@@ -147,12 +162,11 @@ ${ex.descanso_seg||60}s
 
 
 
-/* CORRIDA */
 if(t.corrida){
 
 html+=`
 <h5>
-Corrida (${t.corrida.tipo})
+Corrida ${t.corrida.tipo}
 </h5>
 `;
 
@@ -164,61 +178,26 @@ html+=`
 <div class='card'>
 <div class='card-content'>
 
-<b>${b.fase}</b><br>
-
-${b.tempo_min ?
-"Tempo: "+b.tempo_min+" min<br>" : ""}
-
-${b.repeticoes ?
-"Repetições: "+b.repeticoes+"<br>" : ""}
-
-${b.estrutura||""}
-${b.descricao ? "<br>"+b.descricao : ""}
-
-</div>
-</div>
-`;
-
-});
-
-}
-
-
-if(t.corrida.progressao){
-
-html+="<h6>Progressão</h6>";
-
-t.corrida.progressao.forEach(p=>{
-
-html+=`
-<div class='card'>
-<div class='card-content'>
-
-Semanas:
-${p.semanas}
+<b>${b.fase}</b>
 
 <br>
 
-Distância:
-${p.distancia_km} km
+${b.tempo_min||""}
+${b.tempo_min ? " min" : ""}
+
+<br>
+
+${b.estrutura||""}
+
+<br>
+
+${b.descricao||""}
 
 </div>
 </div>
 `;
 
 });
-
-}
-
-
-if(t.corrida.meta){
-
-html+=`
-<p>
-Meta:
-${t.corrida.meta}
-</p>
-`;
 
 }
 
@@ -272,30 +251,40 @@ document.getElementById(
 
 let t=treinos[idx];
 
-let html="";
+let hoje=
+new Date()
+.toISOString()
+.split("T")[0];
+
+let html=`
+
+<div class='input-field'>
+<input
+id='dataTreino'
+type='date'
+value='${hoje}'
+>
+<label class='active'>
+Data
+</label>
+</div>
+
+`;
 
 
-/* PESOS */
+
 if(t.musculacao){
-
-html+="<h5>Cargas</h5>";
 
 t.musculacao.forEach(ex=>{
 
-let chave=
-idx+"_"+ex.exercicio;
-
-let v=
-localStorage.getItem(chave)||"";
-
 html+=`
+
 <div class='input-field'>
 
 <input
-id='${chave}'
+id='${idx}_${ex.exercicio}'
 type='number'
 step='0.1'
-value='${v}'
 >
 
 <label class='active'>
@@ -303,6 +292,7 @@ ${ex.exercicio}
 </label>
 
 </div>
+
 `;
 
 });
@@ -311,61 +301,28 @@ ${ex.exercicio}
 
 
 
-/* REGISTRO CORRIDA */
 if(t.corrida){
-
-let tempo=
-localStorage.getItem(
-idx+"_tempo"
-)||"";
-
-let vmax=
-localStorage.getItem(
-idx+"_vmax"
-)||"";
-
-let dist=
-localStorage.getItem(
-idx+"_dist"
-)||"";
 
 html+=`
 
-<h5>Corrida</h5>
-
 <div class='input-field'>
-<input
-id='tempo'
-type='number'
-step='0.1'
-value='${tempo}'
->
+<input id='tempo' type='number' step='0.1'>
 <label class='active'>
-Tempo (min)
+Tempo
 </label>
 </div>
 
 
 <div class='input-field'>
-<input
-id='vmax'
-type='number'
-step='0.1'
-value='${vmax}'
->
+<input id='vmax' type='number' step='0.1'>
 <label class='active'>
-Vel máx
+Vel Máx
 </label>
 </div>
 
 
 <div class='input-field'>
-<input
-id='dist'
-type='number'
-step='0.1'
-value='${dist}'
->
+<input id='dist' type='number' step='0.1'>
 <label class='active'>
 Distância
 </label>
@@ -378,7 +335,8 @@ Distância
 
 
 html+=`
-<a class='btn blue'
+<a
+class='btn blue'
 onclick='salvar(${idx})'>
 Salvar
 </a>
@@ -395,25 +353,48 @@ document.getElementById(
 
 function salvar(idx){
 
+let dataTreino=
+document.getElementById(
+"dataTreino"
+).value;
+
 let t=treinos[idx];
 
 
-/* SALVAR CARGAS */
+
 if(t.musculacao){
 
 t.musculacao.forEach(ex=>{
 
 let chave=
-idx+"_"+ex.exercicio;
+"hist_"+
+idx+"_"+
+ex.exercicio;
 
-let valor=
+let hist=
+JSON.parse(
+localStorage.getItem(chave)
+||"[]"
+);
+
+hist.push({
+
+data:dataTreino,
+
+peso:Number(
 document.getElementById(
-chave
-).value;
+idx+"_"+ex.exercicio
+).value
+),
+
+reps_realizadas:
+ex.repeticoes
+
+});
 
 localStorage.setItem(
 chave,
-valor
+JSON.stringify(hist)
 );
 
 });
@@ -422,39 +403,56 @@ valor
 
 
 
-/* SALVAR CORRIDA */
 if(t.corrida){
 
-localStorage.setItem(
-idx+"_tempo",
+let chave=
+"hist_corrida_"+idx;
+
+let hist=
+JSON.parse(
+localStorage.getItem(chave)
+||"[]"
+);
+
+hist.push({
+
+data:dataTreino,
+
+tempo:Number(
 document.getElementById(
 "tempo"
 ).value
-);
+),
 
-localStorage.setItem(
-idx+"_vmax",
+vmax:Number(
 document.getElementById(
 "vmax"
 ).value
-);
+),
 
-localStorage.setItem(
-idx+"_dist",
+dist:Number(
 document.getElementById(
 "dist"
 ).value
+)
+
+});
+
+localStorage.setItem(
+chave,
+JSON.stringify(hist)
 );
 
 }
 
-M.toast({
-html:"Treino salvo"
-});
 
 dashboard();
 
 mostrarTreino(idx);
+
+M.toast({
+html:"Treino salvo"
+});
 
 }
 
@@ -463,48 +461,60 @@ mostrarTreino(idx);
 
 function dashboard(){
 
-let labels=[];
+let datas=[];
 let cargas=[];
-let km=[];
+let distancias=[];
 
 
-treinos.forEach((t,i)=>{
 
-labels.push(
-t.dia
+let chave=
+"hist_0_"+
+treinos[0].musculacao[0].exercicio;
+
+
+let hist=
+JSON.parse(
+localStorage.getItem(
+chave
+)||"[]"
 );
 
 
-/* primeiro exercício */
-if(
-t.musculacao &&
-t.musculacao.length>0
-){
+hist.forEach(x=>{
+
+datas.push(
+x.data
+);
 
 cargas.push(
-Number(
-localStorage.getItem(
-i+"_"+t.musculacao[0].exercicio
-)||0
-)
-);
-
-}
-else{
-cargas.push(0);
-}
-
-
-
-km.push(
-Number(
-localStorage.getItem(
-i+"_dist"
-)||0
-)
+x.peso
 );
 
 });
+
+
+
+let corridaHist=[];
+
+treinos.forEach((t,i)=>{
+
+let h=
+JSON.parse(
+localStorage.getItem(
+"hist_corrida_"+i
+)||"[]"
+);
+
+corridaHist=
+corridaHist.concat(h);
+
+});
+
+
+corridaHist.forEach(x=>
+distancias.push(x.dist)
+);
+
 
 
 document.getElementById(
@@ -515,10 +525,11 @@ cargas.reduce(
 0
 );
 
+
 document.getElementById(
 "corridaTotal"
 ).innerHTML=
-km.reduce(
+distancias.reduce(
 (a,b)=>a+b,
 0
 );
@@ -537,10 +548,10 @@ document.getElementById(
 type:"line",
 
 data:{
-labels,
+labels:datas,
 datasets:[
 {
-label:"Carga",
+label:"Progressão carga",
 data:cargas,
 tension:.4
 }
@@ -560,14 +571,15 @@ document.getElementById(
 "chartCorrida"
 ),
 {
-type:"bar",
+type:"line",
 
 data:{
-labels,
+labels:datas,
 datasets:[
 {
-label:"Distância km",
-data:km
+label:"Distância",
+data:distancias,
+tension:.4
 }
 ]
 }
@@ -575,7 +587,6 @@ data:km
 );
 
 }
-
 
 
 
