@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111111">
+<link rel="manifest" href="manifest.json">
+<title>Treino App PWA</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+font-family:Arial;
+margin:0;
+background:#f4f5f7;
+padding:12px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+.card{
+background:white;
+padding:16px;
+margin-bottom:14px;
+border-radius:16px;
+box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+button{
+padding:14px;
+border:none;
+border-radius:12px;
+font-size:16px;
+margin:6px;
+width:30%;
+}
+
+.primary{
+background:#111;
+color:white;
+}
+
+.hidden{
+display:none;
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin:8px 0;
+border-radius:10px;
+border:1px solid #ccc;
+}
+
+@media(max-width:700px){
+button{
+width:100%;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Treino App</h2>
+
+<button class="primary"
+onclick="showScreen('treinos')">
+Treinos
+</button>
+
+<button class="primary"
+onclick="showScreen('adicionar')">
+Adicionar
+</button>
+
+<button class="primary"
+onclick="showScreen('dashboard')">
+Dashboard
+</button>
+
+<button class="primary"
+onclick="syncToGoogle()">
+Sincronizar
+</button>
+
+</div>
+
+<div id="treinos"
+class="card">
+
+<h3>Treino do Dia</h3>
+
+<div id="todayWorkout">
+Use Adicionar para registrar treinos.
+</div>
+
+</div>
+
+
+<div id="adicionar"
+class="card hidden">
+
+<h3>Adicionar Registro</h3>
+
+<label>Dia</label>
+
+<select id="dia">
+
+<option>Terça</option>
+<option>Quarta</option>
+<option>Quinta</option>
+<option>Sexta</option>
+<option>Sábado</option>
+<option>Domingo</option>
+
+</select>
+
+<label>Registro</label>
+
+<input
+id="registro"
+placeholder="Ex: Supino 20kg / Corrida 4km 24min"
+/>
+
+<button class="primary"
+onclick="saveWorkout()">
+Salvar
+</button>
+
+</div>
+
+
+<div id="dashboard"
+class="card hidden">
+
+<h3>Dashboard</h3>
+
+<h4>Evolução</h4>
+<canvas id="strengthChart"></canvas>
+
+<h4>Corrida</h4>
+<canvas id="runChart"></canvas>
+
+<h4>Jiu-Jitsu</h4>
+<div id="jjStats"></div>
+
+</div>
+
+</div>
+
+<script>
+
+let db;
+
+const request=
+indexedDB.open(
+'TreinoDB',
+1
+);
+
+request.onupgradeneeded=(e)=>{
+
+db=e.target.result;
+
+if(
+!db.objectStoreNames.contains(
+'logs'
+)
+){
+db.createObjectStore(
+'logs',
+{
+keyPath:'id',
+autoIncrement:true
+}
+);
+}
+
+};
+
+request.onsuccess=(e)=>{
+db=e.target.result;
+};
+
+
+/* telas */
+
+function showScreen(id){
+
+[
+'treinos',
+'adicionar',
+'dashboard'
+].forEach(x=>{
+
+document
+.getElementById(x)
+.classList.add('hidden');
+
+});
+
+document
+.getElementById(id)
+.classList.remove('hidden');
+
+if(
+id==='dashboard'
+){
+renderDashboard();
+}
+
+}
+
+
+/* indexeddb */
+
+function addLog(record){
+
+let tx=
+db.transaction(
+['logs'],
+'readwrite'
+);
+
+tx
+.objectStore(
+'logs'
+)
+.add(record);
+
+}
+
+function getLogs(){
+
+return new Promise(resolve=>{
+
+let tx=
+db.transaction(
+['logs'],
+'readonly'
+);
+
+let req=
+tx
+.objectStore(
+'logs'
+)
+.getAll();
+
+req.onsuccess=()=>{
+
+resolve(
+req.result
+);
+
+};
+
+});
+
+}
+
+
+/* salvar */
+
+function saveWorkout(){
+
+addLog({
+
+date:
+new Date()
+.toLocaleDateString(),
+
+day:
+document
+.getElementById(
+'dia'
+).value,
+
+entry:
+document
+.getElementById(
+'registro'
+).value
+
+});
+
+alert(
+'Registro salvo'
+);
+
+}
+
+
+/* dashboard */
+
+let chart1;
+let chart2;
+
+async function renderDashboard(){
+
+const d=
+await getLogs();
+
+document
+.getElementById(
+'jjStats'
+)
+.innerHTML=
+'Total registros: '
++d.length;
+
+
+let labels=
+d.map(
+x=>x.date
+);
+
+let values=
+d.map(
+(x,i)=>i+1
+);
+
+if(chart1){
+chart1.destroy();
+}
+
+chart1=
+new Chart(
+document
+.getElementById(
+'strengthChart'
+),
+{
+type:'line',
+
+data:{
+labels:labels,
+
+datasets:[
+{
+label:
+'Treinos',
+
+data:values
+}
+]
+}
+}
+);
+
+
+if(chart2){
+chart2.destroy();
+}
+
+chart2=
+new Chart(
+document
+.getElementById(
+'runChart'
+),
+{
+type:'line',
+
+data:{
+labels:labels,
+
+datasets:[
+{
+label:
+'Registros',
+
+data:values
+}
+]
+}
+}
+);
+
+}
+
+
+/* google sync */
+
+function syncToGoogle(){
+
+alert(
+'Configurar URL do Apps Script'
+);
+
+}
+
+
+/* service worker */
+
+if(
+'serviceWorker'
+in navigator
+){
+navigator
+.serviceWorker
+.register(
+'sw.js'
+);
+}
+
+</script>
+
+</body>
+</html>
