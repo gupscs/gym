@@ -3,7 +3,7 @@
 
 {
 "dia":"Quarta",
-"objetivo":"Hipertrofia + base aeróbica",
+"objetivo":"Hipertrofia segura + base aeróbica",
 
 "musculacao":[
 {
@@ -23,12 +23,23 @@
 "series":3,
 "repeticoes":"12",
 "descanso_seg":45
+},
+{
+"exercicio":"Rosca direta",
+"series":2,
+"repeticoes":"12",
+"descanso_seg":45
+},
+{
+"exercicio":"Tríceps corda",
+"series":2,
+"repeticoes":"12",
+"descanso_seg":45
 }
 ],
 
 "corrida":{
 "tipo":"leve",
-
 "blocos":[
 {
 "fase":"Aquecimento",
@@ -50,26 +61,44 @@
 {
 "dia":"Quinta",
 
-"musculacao":[
+"objetivo":"Fortalecimento lombar safe",
 
+"musculacao":[
 {
 "exercicio":"Leg press",
 "series":3,
 "repeticoes":"12"
 },
-
 {
 "exercicio":"Afundo com halter",
 "series":3,
 "repeticoes":"10"
 },
-
+{
+"exercicio":"Mesa flexora",
+"series":3,
+"repeticoes":"12"
+},
 {
 "exercicio":"Glute bridge",
 "series":3,
 "repeticoes":"12"
+},
+{
+"exercicio":"Prancha",
+"series":3,
+"repeticoes":"30 segundos"
+},
+{
+"exercicio":"Dead bug",
+"series":3,
+"repeticoes":"10"
+},
+{
+"exercicio":"Bird dog",
+"series":3,
+"repeticoes":"10"
 }
-
 ]
 
 },
@@ -79,9 +108,16 @@
 {
 "dia":"Sexta",
 
+"objetivo":"Upper + corrida intervalada",
+
 "musculacao":[
 {
 "exercicio":"Supino inclinado",
+"series":3,
+"repeticoes":"10"
+},
+{
+"exercicio":"Puxada na frente",
 "series":3,
 "repeticoes":"10"
 },
@@ -93,29 +129,79 @@
 ],
 
 "corrida":{
-
 "tipo":"intervalada",
 
 "blocos":[
-
 {
 "fase":"Aquecimento",
 "tempo_min":5
 },
-
 {
 "fase":"Intervalos",
 "repeticoes":6,
 "estrutura":"1 min rápido + 1 min andando"
 },
-
 {
 "fase":"Desaquecimento",
 "tempo_min":5
 }
-
 ]
+}
 
+},
+
+
+
+{
+"dia":"Sabado",
+
+"objetivo":"Full body leve + técnica corrida",
+
+"musculacao":[
+{
+"exercicio":"Agachamento goblet",
+"series":3,
+"repeticoes":"12",
+"descanso_seg":60
+},
+{
+"exercicio":"Remada unilateral",
+"series":3,
+"repeticoes":"10",
+"descanso_seg":60
+},
+{
+"exercicio":"Supino leve",
+"series":3,
+"repeticoes":"10",
+"descanso_seg":60
+},
+{
+"exercicio":"Elevação lateral",
+"series":2,
+"repeticoes":"12",
+"descanso_seg":45
+}
+],
+
+"corrida":{
+"tipo":"tecnica",
+
+"blocos":[
+{
+"fase":"Postura",
+"descricao":"tronco alto"
+},
+{
+"fase":"Respiração",
+"descricao":"2:2"
+},
+{
+"fase":"Corrida",
+"tempo_min":25,
+"descricao":"ritmo confortável"
+}
+]
 }
 
 },
@@ -124,6 +210,8 @@
 
 {
 "dia":"Domingo",
+
+"objetivo":"Corrida longa",
 
 "corrida":{
 
@@ -134,17 +222,18 @@
 "semanas":"1-2",
 "distancia_km":3
 },
-
 {
 "semanas":"3-4",
 "distancia_km":4
 },
-
 {
 "semanas":"5+",
 "distancia_km":5
 }
-]
+],
+
+"meta_ritmo":"6:00/km",
+"meta_final":"5:30/km"
 
 }
 
